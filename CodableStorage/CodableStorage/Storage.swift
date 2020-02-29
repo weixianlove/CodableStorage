@@ -20,9 +20,12 @@ protocol WritableStorage {
     func save(value: Data, for key: String, handler: @escaping Handler<Data>)
 }
 
-typealias Storage = ReadableStorage & WritableStorage
+protocol DeletableStorage {
+    func delete(for key: String) throws
+    func deleteAll() throws
+}
 
-
+typealias Storage = ReadableStorage & WritableStorage & DeletableStorage
 
 enum StorageError: Error {
     case notFound

@@ -20,6 +20,7 @@ class ViewController: UIViewController {
             let tweets: [String]
         }
         
+
         let storage = CodableStorage()
         
         let timeline = Timeline(tweets: ["Hello", "World", "!!!"])
@@ -32,14 +33,19 @@ class ViewController: UIViewController {
         if let cached: Timeline = try? storage.fetch(for: "timeline")  {
             print(cached)
         }
-
+   
+        do {
+            try storage.delete(for: "timeline")
+        } catch  {
+            print(error)
+        }
+        
         do {
             let cached: Timeline = try storage.fetch(for: "timeline")
             print(cached)
         } catch {
             print(error)
         }
-        
     }
     
 

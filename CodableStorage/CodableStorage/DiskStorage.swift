@@ -74,3 +74,16 @@ extension DiskStorage: ReadableStorage {
     }
 }
 
+
+extension DiskStorage: DeletableStorage {
+    func delete(for key: String) throws {
+        let url = path.appendingPathComponent(key)
+        try fileManager.removeItem(at: url)
+    }
+    
+    func deleteAll() throws {
+        try fileManager.removeItem(at: path)
+    }
+    
+    
+}

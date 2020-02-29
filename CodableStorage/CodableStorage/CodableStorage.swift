@@ -15,7 +15,7 @@ class CodableStorage {
     private let encoder: JSONEncoder
     
     init(
-        path: URL = URL(fileURLWithPath:  NSTemporaryDirectory()),
+        path: URL = URL(fileURLWithPath:  NSTemporaryDirectory() + "/storage"),
         decoder: JSONDecoder = .init(),
         encoder: JSONEncoder = .init()
     ) {
@@ -33,5 +33,9 @@ class CodableStorage {
     func save<T: Encodable>(_ value: T, for key: String) throws {
         let data = try encoder.encode(value)
         try storage.save(value: data, for: key)
+    }
+    
+    func delete(for key: String) throws {
+        try storage.delete(for: key)
     }
 }
