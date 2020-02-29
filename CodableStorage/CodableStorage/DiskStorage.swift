@@ -46,11 +46,11 @@ extension DiskStorage: WritableStorage {
         }
     }
     
-    func save(value: Data, for key: String, handler: @escaping Handler<Data>) {
+    func save(value: Data, for key: String, handler: @escaping Handler<String>) {
         queue.async {
             do {
                 try self.save(value: value, for: key)
-                handler(.success(value))
+                handler(.success(key))
             } catch {
                 handler(.failure(error))
             }
@@ -78,12 +78,25 @@ extension DiskStorage: ReadableStorage {
 extension DiskStorage: DeletableStorage {
     func delete(for key: String) throws {
         let url = path.appendingPathComponent(key)
+        guard let _ = fileManager.contents(atPath: url.path) else {
+            throw StorageError.notFound
+        }
         try fileManager.removeItem(at: url)
     }
     
+    func delete(for key: String, handler: @escaping Handler<Any>) {
+        queue.async {
+            handler(Result {try self.delete(for: key)})
+        }
+    }
+            
     func deleteAll() throws {
         try fileManager.removeItem(at: path)
     }
     
-    
+    func deleteAll(handler: @escaping Handler<Any>) {
+        queue.async {
+            handler(Result {try self.deleteAll()})
+        }
+    }
 }

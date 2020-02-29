@@ -30,12 +30,39 @@ class CodableStorage {
         return try decoder.decode(T.self, from: data)
     }
     
+    func asyncFetch<T: Decodable>(for key: String, handler:@escaping Handler<T>) {
+        storage.fetchValue(for: key) { result in
+            handler(Result {try self.decoder.decode(T.self, from: result.get())} )
+        }
+    }
+    
     func save<T: Encodable>(_ value: T, for key: String) throws {
         let data = try encoder.encode(value)
         try storage.save(value: data, for: key)
     }
     
+    func asyncSave<T: Encodable>(_ value: T, for key: String, handler:@escaping Handler<String>) {
+        do {
+            let data = try encoder.encode(value)
+            storage.save(value: data, for: key, handler: handler)
+        } catch {
+            handler(.failure(error))
+        }
+    }
+    
     func delete(for key: String) throws {
         try storage.delete(for: key)
+    }
+    
+    func asyncDelete(for key: String, handler: @escaping Handler<Any>) {
+        storage.delete(for: key, handler: handler)
+    }
+    
+    func deleteAll() throws {
+        try storage.deleteAll()
+    }
+    
+    func asyncDeleteAll(handler: @escaping Handler<Any>) {
+        storage.deleteAll(handler: handler)
     }
 }

@@ -17,12 +17,14 @@ protocol ReadableStorage {
 
 protocol WritableStorage {
     func save(value: Data, for key: String) throws
-    func save(value: Data, for key: String, handler: @escaping Handler<Data>)
+    func save(value: Data, for key: String, handler: @escaping Handler<String>)
 }
 
 protocol DeletableStorage {
     func delete(for key: String) throws
+    func delete(for key: String, handler: @escaping Handler<Any>)
     func deleteAll() throws
+    func deleteAll(handler: @escaping Handler<Any>)
 }
 
 typealias Storage = ReadableStorage & WritableStorage & DeletableStorage
