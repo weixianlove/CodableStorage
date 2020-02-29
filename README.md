@@ -25,4 +25,19 @@ do {
 if let cached: Timeline = try? storage.fetch(for: "timeline")  {
     print(cached)
 }
+
+//删
+do {
+    try storage.delete(for: "timeline")
+} catch  {
+    print(error)
+}
+
+//读
+do {
+    let cached: Timeline = try storage.fetch(for: "timeline")
+    print(cached)
+} catch {
+    print(error)
+}
 ```
